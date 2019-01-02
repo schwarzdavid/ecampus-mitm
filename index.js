@@ -2,7 +2,9 @@ const express = require('express');
 const request = require('request');
 const bodyParser = require('body-parser');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
+const mongodb = require('mongodb').MongoClient;
 
 const requestHeaders = [
 	'pragma',
@@ -29,14 +31,23 @@ const replace = [
 		to: 'https:\\/\\/localhost:3006'
 	}
 ];
+const mongodbUrl = 'mongodb://localhost:27017';
 
 const app = express();
-const server = https.createServer(httpsOptions, app);
+const redirect = express();
+const httpsServer = https.createServer(httpsOptions, app);
+const httpServer = http.createServer(redirect);
+
+let connection = null;
 
 app.disable('x-powered-by');
 app.use(bodyParser.raw({
 	type: '*/*'
 }));
+
+redirect.all('*', (req, res) => {
+	res.redirect('https://' + req.headers.host + req.headers.url);
+});
 
 app.all('*', (req, res) => {
 	const referer = target.toString() + req.originalUrl;
@@ -56,9 +67,28 @@ app.all('*', (req, res) => {
 		}
 	}
 
-	if(req.body instanceof Buffer){
+	if (req.body instanceof Buffer) {
 		requestObject.body = req.body;
 		requestObject.headers['Content-Type'] = req.get('content-type');
+
+		mongodb.connect(mongodbUrl, (err, client) => {
+			if (err) {
+				return console.log('Cannot establish mongodb connection. Got error: ', err);
+			}
+
+			const db = client.db('fhstp');
+			let bodyString;
+
+			try {
+				bodyString = req.body.toString();
+			} catch (e) {
+				console.log('Cannot parse buffer');
+			}
+
+			db.collection('inputs').insertOne({
+				body: bodyString
+			});
+		});
 	}
 
 	return request(requestObject, (err, response, body) => {
@@ -85,9 +115,17 @@ app.all('*', (req, res) => {
 	});
 });
 
-server.listen(3006, err => {
+httpsServer.listen(3006, err => {
 	if (err) {
-		return console.log('Cannot start webserver. Got error: ', err);
+		return console.log('Cannot start https server. Got error: ', err);
 	}
-	console.log('Server running on port 3006');
+	console.log('HTTPS server running on port 443');
 });
+
+httpServer.listen(80, err => {
+	if (err) {
+		return console.log('Cannot start http server. Got error: ', err);
+	}
+	console.log('HTTP server running on port 80')
+});
+
