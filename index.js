@@ -16,8 +16,8 @@ const requestHeaders = [
 	'cookie'
 ];
 const httpsOptions = {
-	cert: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/fullchain.pem."),
-	key: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/privkey.pem.")
+	cert: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/fullchain.pem"),
+	key: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/privkey.pem")
 };
 const target = new URL('https://ecampus.fhstp.ac.at');
 const source = 'https://fhstp.academy';
@@ -46,7 +46,7 @@ app.use(bodyParser.raw({
 }));
 
 redirect.all('*', (req, res) => {
-	res.redirect('https://' + req.headers.host + req.headers.url);
+	res.redirect('https://' + req.headers.host + req.url);
 });
 
 app.all('*', (req, res) => {
