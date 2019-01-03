@@ -16,8 +16,8 @@ const requestHeaders = [
 	'cookie'
 ];
 const httpsOptions = {
-	cert: fs.readFileSync("C:\\Users\\schwa\\.ssl\\localhost.crt"),
-	key: fs.readFileSync("C:\\Users\\schwa\\.ssl\\localhost.key")
+	cert: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/fullchain.pem."),
+	key: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/privkey.pem.")
 };
 const target = new URL('https://ecampus.fhstp.ac.at');
 const source = 'https://fhstp.academy';
