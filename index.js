@@ -58,7 +58,8 @@ app.all('*', (req, res) => {
 			Host: target.host,
 			Origin: target.origin,
 			Referer: referer
-		}
+		},
+		encoding: null
 	};
 
 	for (const i in req.headers) {
@@ -105,15 +106,17 @@ app.all('*', (req, res) => {
 			res.set('location', locationHeader.replace(replace[0].from, replace[0].to));
 		}
 
-		let output = body;
-
 		if(response.headers['content-type'].indexOf('image/') < 0) {
+			let output = body.toString();
+
 			replace.forEach(obj => {
 				output = output.replace(obj.from, obj.to);
 			});
+
+			return res.send(output);
 		}
 
-		return res.send(output);
+		return res.send(body);
 	});
 });
 
