@@ -16,11 +16,11 @@ const requestHeaders = [
 	'cookie'
 ];
 const httpsOptions = {
-	cert: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/fullchain.pem"),
-	key: fs.readFileSync("/etc/letsencrypt/live/fhstp.academy/privkey.pem")
+	cert: fs.readFileSync("/etc/letsencrypt/live/ecampus.fhstp.academy/fullchain.pem"),
+	key: fs.readFileSync("/etc/letsencrypt/live/ecampus.fhstp.academy/privkey.pem")
 };
 const target = new URL('https://ecampus.fhstp.ac.at');
-const source = 'https://fhstp.academy';
+const source = 'https://ecampus.fhstp.academy';
 const replace = [
 	{
 		from: /https:\/\/ecampus.fhstp.ac.at/gi,
@@ -28,7 +28,7 @@ const replace = [
 	},
 	{
 		from: /https:\\\/\\\/ecampus.fhstp.ac.at/gi,
-		to: 'https:\\/\\/localhost:3006'
+		to: 'https:\\/\\/ecampus.fhstp.academy'
 	}
 ];
 const mongodbUrl = 'mongodb://localhost:27017';
