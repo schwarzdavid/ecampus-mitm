@@ -20,7 +20,7 @@ const httpsOptions = {
 	key: fs.readFileSync("C:\\Users\\schwa\\.ssl\\localhost.key")
 };
 const target = new URL('https://ecampus.fhstp.ac.at');
-const source = 'https://localhost:3006';
+const source = 'https://fhstp.academy';
 const replace = [
 	{
 		from: /https:\/\/ecampus.fhstp.ac.at/gi,
@@ -115,7 +115,7 @@ app.all('*', (req, res) => {
 	});
 });
 
-httpsServer.listen(3006, err => {
+httpsServer.listen(443, err => {
 	if (err) {
 		return console.log('Cannot start https server. Got error: ', err);
 	}
