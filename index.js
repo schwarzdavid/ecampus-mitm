@@ -107,9 +107,11 @@ app.all('*', (req, res) => {
 
 		let output = body;
 
-		replace.forEach(obj => {
-			output = output.replace(obj.from, obj.to);
-		});
+		if(response.headers['content-type'].indexOf('image/') < 0) {
+			replace.forEach(obj => {
+				output = output.replace(obj.from, obj.to);
+			});
+		}
 
 		return res.send(output);
 	});
